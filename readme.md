@@ -3,6 +3,7 @@
 
 You get the ability to easily construct terminal UI such as this:
 
+![alt text](https://github.com/IMQS/options/blob/master/examples/screenshot-1.webp?raw=true =100x)
 
 
 ### Controls
