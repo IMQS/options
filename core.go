@@ -89,7 +89,7 @@ loop:
 // If anything fails, the function calls os.Exit(1)
 // You must call Close() when you are finished using a console object,
 // otherwise you will leave your user's terminal in an unusable state.
-func NewConsole() Console {
+func NewConsole() *Console {
 	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
 	s, e := tcell.NewScreen()
 	if e != nil {
@@ -101,5 +101,5 @@ func NewConsole() Console {
 		os.Exit(1)
 	}
 
-	return Console{Screen: s}
+	return &Console{Screen: s}
 }

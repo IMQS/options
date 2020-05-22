@@ -5,14 +5,21 @@ import (
 )
 
 // Returns the index of the chosen item, or -1 if the user pressed escape
-// choice is the index of the currently chosen item (or -1 for none)
+// choice is the index of the currently chosen item
 func (c *Console) Radio(title string, subTitle string, choice int, els []string) int {
+	if len(els) == 0 {
+		return -1
+	}
+	if choice < 0 {
+		choice = 0
+	} else if choice >= len(els) {
+		choice = len(els) - 1
+	}
 	s := c.Screen
 	s.Clear()
 
 	xCheck := 2
 	yTop := 0
-	item := 0
 
 	if title != "" {
 		c.DrawString(0, yTop, title, tcell.StyleDefault.Foreground(tcell.ColorGreenYellow))
@@ -30,12 +37,12 @@ func (c *Console) Radio(title string, subTitle string, choice int, els []string)
 
 	render := func() {
 		cy := yTop
-		s.ShowCursor(xCheck, cy+item)
 
 		for i, el := range els {
 			st := tcell.StyleDefault.Foreground(tcell.ColorWhite)
 			s.SetContent(xCheck-1, cy, '(', nil, st)
-			if choice == i {
+			if i == choice {
+				s.ShowCursor(xCheck, cy)
 				s.SetContent(xCheck, cy, 'o', nil, st)
 			} else {
 				s.SetContent(xCheck, cy, ' ', nil, st)
@@ -47,7 +54,7 @@ func (c *Console) Radio(title string, subTitle string, choice int, els []string)
 		}
 
 		st := tcell.StyleDefault.Foreground(tcell.ColorDarkGray)
-		c.DrawString(0, cy+1, "SPACE: select, ENTER: continue", st)
+		c.DrawString(0, cy+1, "ENTER: continue", st)
 
 		s.Show()
 	}
@@ -66,17 +73,16 @@ func (c *Console) Radio(title string, subTitle string, choice int, els []string)
 				}
 			case tcell.KeyRune:
 				if ev.Rune() == ' ' {
-					choice = item
 					handled = true
 				}
 			case tcell.KeyUp:
-				if item > 0 {
-					item--
+				if choice > 0 {
+					choice--
 					handled = true
 				}
 			case tcell.KeyDown:
-				if item < len(els)-1 {
-					item++
+				if choice < len(els)-1 {
+					choice++
 					handled = true
 				}
 			}
